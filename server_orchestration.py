@@ -78,7 +78,7 @@ def sequence_assignment(
             )
 
     final_results = []
-    time_delta_gap = datetime.timedelta(seconds=time_gap)
+    time_delta_gap = timedelta(seconds=time_gap)
 
     for parent_dir, images_in_group in grouped_by_dir.items():
         if not images_in_group:
@@ -682,7 +682,7 @@ def aggregate_results(job_id: str,
         blob_name=output_file_path,
         account_key=api_config.STORAGE_ACCOUNT_KEY,
         permission=BlobSasPermissions(read=True, write=False),
-        expiry=datetime.now(timezone.utc)  + timedelta(days=api_config.OUTPUT_SAS_EXPIRATION_DAYS)
+        expiry=datetime.now(timezone.utc) + timedelta(days=api_config.OUTPUT_SAS_EXPIRATION_DAYS)
     )
     output_sas_url = sas_blob_utils.build_azure_storage_uri(
         account=api_config.STORAGE_ACCOUNT_NAME,
