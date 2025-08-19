@@ -381,6 +381,7 @@ def create_batch_job(job_id: str, body: dict):
     try:
         batch_job_manager = BatchJobManager()
         detector_path = (Path(api_config.STORAGE_CONTAINER_MODELS)/api_config.STORAGE_DETECTOR_DIR/api_config.MD_VERSIONS_TO_REL_PATH[model_version]).as_posix()
+        
         batch_job_manager.create_job(job_id,
                                      detector_path,
                                      input_container_sas,
