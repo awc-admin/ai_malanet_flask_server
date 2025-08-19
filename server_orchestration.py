@@ -220,6 +220,8 @@ def create_batch_job(job_id: str, body: dict):
         if use_url and isinstance(use_url, str):  # in case it is included but is intended to be False
             if use_url.lower() in ['false', 'f', 'no', 'n','0']:
                 use_url = False
+            else:
+                use_url = True
 
         images_requested_json_sas = body.get('images_requested_json_sas', None)
 
@@ -236,9 +238,8 @@ def create_batch_job(job_id: str, body: dict):
             model_version = api_config.DEFAULT_MD_VERSION
         
         do_classification = body.get('classify', False) 
-        if do_classification and isinstance(do_classification, str): 
-            if do_classification.lower() in ['false', 'f', 'no', 'n', '0']:
-                do_classification = False
+        if isinstance(do_classification, str): 
+            do_classification = not do_classification.lower() in ['false', 'f', 'no', 'n', '0']
 
         # 'off', 'label rollup', 'hitax classifier'
         # for hitax, can output parent only, or parent-child mixed
@@ -260,6 +261,8 @@ def create_batch_job(job_id: str, body: dict):
             hitax_type = api_config.HITAX_ALL_TYPES[0] 
 
         do_smoothing = body.get('do_smoothing', False)
+        if isinstance(do_smoothing, str): 
+            do_smoothing = not do_smoothing.lower() in ['false', 'f', 'no', 'n', '0']
 
         # request_name and request_submission_timestamp are for appending to
         # output file names

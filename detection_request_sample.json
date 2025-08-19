@@ -1,0 +1,11 @@
+{ 
+"input_container_sas":"SAS", 
+"request_name":"name", 
+"image_path_prefix":"prefix",
+"caller": "awc",  
+"model_version": "model",
+"classify":"False",
+"hitax_type":"type",
+"do_smoothing":"False",
+"supercharge":"False"
+} 

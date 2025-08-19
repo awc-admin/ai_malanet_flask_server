@@ -110,10 +110,9 @@ def request_detections():
 
     supercharge = post_body.get('supercharge', False)
     api_config.POOL_ID = api_config.POOL_ID_SLOW
-    if supercharge is not None:
-        if supercharge==True or (isinstance(supercharge,str) \
-                                 and not supercharge.lower() in ['false', 'f', 'no', 'n', '0']):
-            api_config.POOL_ID = api_config.POOL_ID_FAST # use fast GPU node, e.g. A100
+    if supercharge==True or (isinstance(supercharge,str) \
+                                and not supercharge.lower() in ['false', 'f', 'no', 'n', '0']):
+        api_config.POOL_ID = api_config.POOL_ID_FAST # use fast GPU node, e.g. A100
 
     print(f'POOL_ID: {api_config.POOL_ID}')
 
