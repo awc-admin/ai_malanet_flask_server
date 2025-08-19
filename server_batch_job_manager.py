@@ -56,7 +56,6 @@ class BatchJobManager:
                 EnvironmentSetting(name='DETECTION_CONF_THRESHOLD', value=api_config.DETECTION_CONF_THRESHOLD), # 0.1
             ]
         if classifier_params_path:
-            print(f'BatchJobManager, create_job, job_id: {job_id}, classifier_params_path: {classifier_params_path}')
             _env_settings.append(EnvironmentSetting(name='CLASSIFIER_REL_PARAMS_PATH', value=classifier_params_path)) # models/classifiers/<param_name>.json
             if hitax_type=='off':
                 _env_settings.append(EnvironmentSetting(name='CLASSIFIER_ROLLUP', value=False)) # lowest level only
@@ -64,7 +63,7 @@ class BatchJobManager:
                 _env_settings.append(EnvironmentSetting(name='CLASSIFIER_ROLLUP', value=True)) # rollup to level 1
             elif hitax_type=='hitax classifier':
                 _env_settings.append(EnvironmentSetting(name='CLASSIFIER_HITAX_OUTPUT', value=hitax_output)) # mixed or parent
-        
+        # else: detection only
         job = JobAddParameter(
             id=job_id,
             pool_info=PoolInformation(pool_id=api_config.POOL_ID), # cameratrap_awc

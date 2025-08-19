@@ -144,8 +144,6 @@ def get_classification_params_from_container(do_classification=False, hitax_type
         return classifier_params
     
     # get classification params JSON
-
-
     container_url = sas_blob_utils.build_azure_storage_uri(account=api_config.STORAGE_ACCOUNT_NAME,
                                                             # australianwildlifedia830
                                                            container=api_config.STORAGE_CONTAINER_MODELS
@@ -362,7 +360,6 @@ def create_batch_job(job_id: str, body: dict):
                  f'accepted {api_config.MAX_NUMBER_IMAGES_ACCEPTED_PER_JOB} in one call'))
             job_status_table.update_job_status(job_id, job_status)
             return
-
 
         classifier_params = get_classification_params_from_container(do_classification,hitax_type,do_smoothing)  
 
