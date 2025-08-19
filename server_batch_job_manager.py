@@ -95,7 +95,7 @@ class BatchJobManager:
             score_command = f"cp $AZ_BATCH_NODE_MOUNTS_DIR/{api_config.STORAGE_CONTAINER_API}/scripts_v3/score_rollup.py . && python score_rollup.py"
         
         score_command = f'/bin/bash -c \"{score_command}\"'
-        num_images_per_task = api_config.NUM_IMAGES_PER_TASK # 2000
+        num_images_per_task = api_config.NUM_IMAGES_PER_TASK
         # form shards of images and assign each shard to a Task
         num_tasks = math.ceil(num_images / num_images_per_task)
         # for persisting stdout and stderr

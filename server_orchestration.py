@@ -394,9 +394,7 @@ def create_batch_job(job_id: str, body: dict):
         tasks_start_time = get_utc_time()
         num_tasks, task_ids_failed_to_submit = batch_job_manager.submit_tasks(job_id, 
                                                                               num_images,
-                                                                              hitax_type=hitax_type,
-                                                                              hitax_output=hitax_output)
-
+                                                                              hitax_type=hitax_type)
         # now request_status moves from created to running
         job_status = get_job_status('running',
                                     (f'Submitted {num_images} images to cluster in {num_tasks} shards. '

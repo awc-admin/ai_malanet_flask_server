@@ -6,6 +6,7 @@
 "model_version": "model",
 "classify":"False",
 "hitax_type":"type",
+"hitax_output":"output",
 "do_smoothing":"False",
 "supercharge":"False"
 } 
