@@ -188,7 +188,7 @@ def get_classification_params_from_container(do_classification=False, hitax_type
             blob_client.download_blob().readinto(stream)
             stream.seek(0)
             classification_json = json.load(stream)
-            classifier_params.classifier_model_weight = classification_json['model_weight']
+            classifier_params.classifier_weight = classification_json['model_weight']
             classifier_params.classifier_label_names = classification_json['label_names']
             classifier_params.classifier_conf_threshold = classification_json.get('classifier_conf_threshold', api_config.CLASSIFIER_CONF_THRESHOLD)
             classifier_params.classifier_params_path = (Path(api_config.STORAGE_CONTAINER_MODELS)/api_config.STORAGE_CLASSIFIER_DIR/json_param_name).as_posix()
@@ -389,7 +389,6 @@ def create_batch_job(job_id: str, body: dict):
                                      )
 
         # submit the tasks to the Batch job
-        tasks_start_time = get_utc_time()
         num_tasks, task_ids_failed_to_submit = batch_job_manager.submit_tasks(job_id, 
                                                                               num_images,
                                                                               hitax_type=hitax_type)
@@ -425,7 +424,6 @@ def create_batch_job(job_id: str, body: dict):
                 'label_names': classifier_params.classifier_label_names,
                 'parent_names': classifier_params.classifier_parent_names,
                 'classifier_weight': classifier_params.classifier_weight,
-                'tasks_start_time': tasks_start_time,
                 'classifier_conf_threshold': classifier_params.classifier_conf_threshold,
                 'hitax_type': hitax_type,
                 'hitax_output': hitax_output,
@@ -451,7 +449,6 @@ def monitor_batch_job(job_id: str,
                       label_names: Optional[list] = None,
                       parent_names: Optional[list] = None,
                       classifier_weight: Optional[str] = None,
-                      tasks_start_time: str = None,
                       classifier_conf_threshold: float = None,
                       hitax_type: str = None,
                       hitax_output: str = api_config.HITAX_OUTPUT_TYPES[0],
@@ -509,7 +506,6 @@ def monitor_batch_job(job_id: str,
                                            label_names,
                                            parent_names,
                                            classifier_weight,
-                                           tasks_start_time,
                                            classifier_conf_threshold,
                                            hitax_type,
                                            hitax_output,
@@ -559,7 +555,6 @@ def aggregate_results(job_id: str,
                       label_names: Optional[list] = None,
                       parent_names: Optional[list] = None,
                       classifier_weight: Optional[str] = None,
-                      tasks_start_time: str = None,
                       classifier_conf_threshold: float = None,
                       hitax_type: str = None,
                       hitax_output: str = None,
@@ -624,9 +619,9 @@ def aggregate_results(job_id: str,
                 'info': {
                     'format_version': api_config.OUTPUT_FORMAT_VERSION,
                     'detector': api_config.MD_VERSIONS_TO_REL_PATH[model_version],
-                    'detection_start_time': job_submission_timestamp,
-                    'detection_completion_time': get_utc_time(),
-                    'tasks_duration_seconds': int((datetime.now(timezone.utc) - datetime.fromisoformat(job_submission_timestamp)).total_seconds()),
+                    'job_submission_time': job_submission_timestamp,
+                    'job_completion_time': get_utc_time(),
+                    'job_duration_seconds': int((datetime.now(timezone.utc) - datetime.fromisoformat(job_submission_timestamp)).total_seconds()),
                     'num_images': len(all_results),
                     'num_animals': count_categories.get("1", 0),
                     'num_persons': count_categories.get("2", 0),
