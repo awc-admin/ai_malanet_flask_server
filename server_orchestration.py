@@ -28,7 +28,7 @@ from server_job_status_table import JobStatusTable
 from pathlib import Path
 import collections
 from typing import Any, Dict, List
-from megadetector.postprocessing.classification_postprocessing import smooth_classification_results_sequence_level, ClassificationSmoothingOptions
+from .megadetector.postprocessing.classification_postprocessing import smooth_classification_results_sequence_level, ClassificationSmoothingOptions
 
 def sequence_assignment(
     image_data: List[Dict[str, Any]], 
