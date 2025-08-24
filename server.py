@@ -143,9 +143,10 @@ def request_detections():
 
     try:
         job_id = uuid.uuid4().hex
+        # TODO: consider checking if the job exists yet; if not, create it
         job_status_table.create_job_status(
             job_id=job_id,
-            status= get_job_status('created', 'Request received. Listing images next...'),
+            status= get_job_status('created', 'Request received from API. Listing images next...'),
             call_params=post_body
         )
     except Exception as e:

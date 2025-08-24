@@ -38,10 +38,39 @@ class JobStatusTable:
         - num_images  (present after Batch Job created)
     """
     # a job moves from created to running/problem after the Batch Job has been submitted
-    allowed_statuses = ['created', 'running', 'failed', 'problem', 'completed', 'canceled']
+    allowed_statuses = ['created', # with messages such as  
+                        # - Request received from React web. Pending upload image directory to Blob container
+                        # TODO: other statuses generating from React Web workflow
+
+                        # - Request received from API. Listing images next...
+                        'submitting_job', # with messages such as 
+                        # - {num_images} images listed; submitting the job...
+                        'running', # with messages such as
+                        # - Submitted {num_images} images to cluster in {num_tasks} shards. 
+                        # - Check number {num_checks}, {num_tasks_succeeded} out of {num_tasks} shards have completed, successfully, {num_tasks_failed} shards have failed. 
+                        'failed', # with messages such as
+                        # - The number of images ({num_images}) requested for processing exceeds the maximum accepted {api_config.MAX_NUMBER_IMAGES_ACCEPTED_PER_JOB} in one call
+                        # - Error occurred while preparing the Batch job: {e}
+                        'problem', # with messages such as
+                        # - Please contact us. Error occurred while submitting the Batch job: {e}
+                        # - Error occurred while starting the monitoring thread: {e}
+                        # - Job unfinished after {num_checks} x {api_config.MONITOR_PERIOD_MINUTES} minutes, please contact us to retrieve the results. Number of succeeded shards: {num_tasks_succeeded}
+                        # - Please contact us to retrieve the results. Error occurred while aggregating results: {e}
+                        'completed', # with messages such as
+                        # - 0 images found in provided list of images
+                        # - Zero images found in container or in provided list of images
+                        # - {
+                        #     'num_failed_shards': num_tasks_failed,
+                        #     'output_file_urls': {
+                        #         'detections': output_sas_url # this is the downloadable JSON result
+                        #     }
+                        #   }
+                        'canceled' # with message:
+                        # - Request has been canceled by the user.
+                        ]
 
     def __init__(self, api_instance=None):
-        self.api_instance = api_instance if api_instance is not None else API_INSTANCE_NAME # 'cp'
+        self.api_instance = api_instance if api_instance is not None else API_INSTANCE_NAME
         cosmos_client = CosmosClient(COSMOS_ENDPOINT, credential=COSMOS_WRITE_KEY)
         db_client = cosmos_client.get_database_client('camera-trap') #'camera-trap'
         self.db_jobs_client = db_client.get_container_client('batch_api_jobs')
@@ -62,7 +91,6 @@ class JobStatusTable:
             'call_params': call_params
         }
         created_item = self.db_jobs_client.create_item(item)
-        print("successful")
         return created_item
 
     def update_job_status(self, job_id: str, status: Union[dict, str]) -> dict:
@@ -104,7 +132,7 @@ class JobStatusTable:
             read_item = self.db_jobs_client.read_item(job_id, partition_key=job_id)
             assert read_item['api_instance'] == self.api_instance, 'Job does not belong to this API instance'
         except CosmosResourceNotFoundError:
-            return None  # job_id not a key
+            return None  # job_id not a key. Task is not found
         except Exception as e:
             logging.error(f'server_job_status_table, read_job_status, exception: {e}')
             raise

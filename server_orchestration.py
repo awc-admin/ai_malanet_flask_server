@@ -366,7 +366,7 @@ def create_batch_job(job_id: str, body: dict):
         # upload the image list containing their paths (string) to the container
         upload_imgs_to_container(image_paths,job_id)
 
-        job_status = get_job_status('created', f'{num_images} images listed; submitting the job...')
+        job_status = get_job_status('submitting_job', f'{num_images} images listed; submitting the job...')
         job_status_table.update_job_status(job_id, job_status)
 
     except Exception as e:
